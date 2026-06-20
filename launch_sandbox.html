@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Launching CodeSandbox...</title>
+    <style>
+        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background: #0f172a; color: #f8fafc; }
+        .card { background: #1e293b; padding: 2rem; border-radius: 1rem; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .btn { background: #6366f1; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 1rem; }
+        .btn:hover { background: #4f46e5; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Your Project is Ready!</h1>
+        <p>Click below to launch your premium "Contact Us" form on CodeSandbox.</p>
+        
+        <form id="csb-form" action="https://codesandbox.io/api/v1/sandboxes/define" method="POST">
+            <input type="hidden" name="parameters" id="parameters-input" />
+            <button type="submit" class="btn">🚀 Open CodeSandbox</button>
+        </form>
+    </div>
+
+    <!-- We use a small script to encode the project files for CodeSandbox Define API -->
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+    <script>
+        const projectFiles = {
+            "index.html": {
+                "content": `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Premium Experience</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <main class="contact-container">
+        <section class="contact-card">
+            <header class="contact-header">
+                <h1>Contact Us</h1>
+                <p>Have a question or feedback? We'd love to hear from you.</p>
+            </header>
+            <form id="contactForm" class="contact-form">
+                <div class="input-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="hello@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" placeholder="Tell us what's on your mind..." required></textarea>
+                </div>
+                <button type="submit" id="submitBtn" class="submit-button">
+                    <span class="btn-text">Send</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+            </form>
+            <div id="statusMessage" class="status-message"></div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>`
+            },
+            "style.css": {
+                "content": `:root { --primary: #6366f1; --primary-hover: #4f46e5; --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); --card-bg: rgba(255, 255, 255, 0.05); --card-border: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --input-bg: rgba(0, 0, 0, 0.2); --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8); --font-heading: 'Playfair Display', serif; --font-body: 'Outfit', sans-serif; --success: #10b981; --error: #ef4444; } * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family: var(--font-body); background: var(--bg-gradient); color: var(--text-main); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-x: hidden; } .background-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2629&auto=format&fit=crop'); background-size: cover; z-index: -1; } .contact-container { width: 100%; max-width: 500px; padding: 20px; animation: fadeIn 0.8s ease-out; } .contact-card { background: var(--card-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 24px; padding: 40px; box-shadow: var(--glass-shadow); } .contact-header h1 { font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 8px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } .contact-header p { color: var(--text-muted); font-size: 1rem; margin-bottom: 32px; font-weight: 300; } .contact-form { display: flex; flex-direction: column; gap: 20px; } .input-group { display: flex; flex-direction: column; gap: 8px; } .input-group label { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); transition: color 0.3s ease; } .input-group input, .input-group textarea { background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 16px; color: white; font-family: var(--font-body); font-size: 1rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; } .input-group input:focus, .input-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); background: rgba(255, 255, 255, 0.05); } .submit-button { margin-top: 10px; background: var(--primary); color: white; border: none; border-radius: 12px; padding: 16px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; } .submit-button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); } .loader { display: none; width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; } @keyframes spin { to { transform: rotate(360deg); } } @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } } .status-message { margin-top: 20px; text-align: center; font-size: 0.9rem; padding: 10px; border-radius: 8px; display: none; } .status-message.success { display: block; background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); } .status-message.error { display: block; background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error); }`
+            },
+            "script.js": {
+                "content": `document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const loader = document.getElementById('loader');
+    const statusMessage = document.getElementById('statusMessage');
+    statusMessage.className = 'status-message';
+    statusMessage.textContent = '';
+    btnText.style.opacity = '0';
+    loader.style.display = 'block';
+    submitBtn.disabled = true;
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        message: document.getElementById('message').value
+    };
+    try {
+        const response = await fetch('https://www.greatfrontend.com/api/questions/contact-form', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+        if (response.ok) {
+            statusMessage.textContent = 'Message sent successfully!';
+            statusMessage.classList.add('success');
+            document.getElementById('contactForm').reset();
+        } else {
+            statusMessage.textContent = 'Submission failed. Please try again.';
+            statusMessage.classList.add('error');
+        }
+    } catch (error) {
+        statusMessage.textContent = 'Network error.';
+        statusMessage.classList.add('error');
+    } finally {
+        btnText.style.opacity = '1';
+        loader.style.display = 'none';
+        submitBtn.disabled = false;
+    }
+});`
+            },
+            "package.json": {
+                "content": {
+                    "dependencies": {},
+                    "main": "index.html"
+                }
+            }
+        };
+
+        const parameters = LZString.compressToBase64(JSON.stringify({ files: projectFiles }))
+            .replace(/\+/g, "-")
+            .replace(/\//g, "_")
+            .replace(/=+$/, "");
+
+        document.getElementById('parameters-input').value = parameters;
+    </script>
+</body>
+</html>
